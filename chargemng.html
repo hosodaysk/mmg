@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="stdio.js"></script>
+    <title>金銭管理 > 請求情報</title>
+    <script src="./chargemng/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <p class="hd-title"><a href="index.html">LINE金銭管理</a></p>
+        <nav class="hd-memu">
+            <ul><label>決済情報</label>
+                <li><a href="registration.php">登録</a></li>
+                <li><a href="dataview.php">表示</a></li>
+                <li id="hd-memu-active"><a href="chargemng.html">請求</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="data_tables">
+        <section>
+            <form id="form_chargemng_reg" method="post" action="./chargemng/main.php">
+                <ul>
+                    <label>請求情報登録</label>
+                    <hr>
+                    <li>
+                        <label>請求元</label>
+                        <select name="paymethod_number">
+                            <option disabled selected value="noselect">支払方法</option>
+                            <!-- <?php
+                                $db = new DBSrvs();
+                                $mysqli = $db->mysqli();
+                                $paymethod = $db->get_paymethod($USER_ID);
+                                foreach ($paymethod as $key => $m) {
+                                    echo "<option value='{$m["paymethod_number"]}'>{$m["subname"]}</option>";
+                                }
+                                $db->close();
+                            ?> -->
+                        </select>
+                    </li>
+                    <li>
+                        <label>請求日（変更）</label>
+                        <label class="default-chbx" style="margin-top: 0;"><input type="checkbox" name="due_update" id="chbx1" onclick="chbx(this)">更新</label>
+                        <input type="date" name="date" min="" max="">
+                    </li>
+                    <hr>
+                    <li><!-- value -->
+                        <label>請求金額<span class="values_check_holder" autocomplete="off" id="charge_v_holder">0</span></label>
+                        <input type="number" name="charge_v" placeholder="請求金額">
+                    </li>
+                    <li><!-- cmnt -->
+                        <label>コメント</label>
+                        <input type="text" name="cmnt" placeholder="コメント">
+                    </li>
+                    <li><input type="button" value="登録" name="send_btn" onclick="return formcheck('form_chargemng_reg')"></li>
+                </ul>
+                <input type="hidden" name="datatype" value="chargemng_reg">
+                <input type="hidden" name="uid" value="1">
+            </form>
+        </section>
+        <section>
+            <hr class="sub-section">
+            <form id="form_chargemng_stupdate" method="post" action="./chargemng/main.php">
+                <ul>
+                    <label>ステータス更新</label>
+                    <hr>
+                    <li><!-- value -->
+                        <label>レコードID</label>
+                        <input type="number" name="rcrd_id" placeholder="レコードID">
+                    </li>
+                    <li><!-- status -->
+                        <label>ステータス</label>
+                        <input type="text" name="cmnt" placeholder="ステータス">
+                    </li>
+                    <li><input type="button" value="登録" name="send_btn" onclick="return formcheck('form_chargemng_stupdate')"></li>
+                </ul>
+                <input type="hidden" name="datatype" value="chargemng_stupdate">
+                <input type="hidden" name="uid" value="1">
+            </form>
+        </section>
+        <section class="result-dataview">
+            <hr class="sub-section">
+            <header class="sub-section">
+                <p>登録済み情報</p>
+            </header>
+            <main>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="6">[X年Y月] 当月記録（支払方法別）</th>
+                        </tr>
+                        <tr>
+                            <th width="180px"></th>
+                            <th width="60px"></th>
+                            <th width="100px"></th>
+                            <th width="40px"></th>
+                            <th width="100px"></th>
+                            <th width="20px"></th>
+                        </tr>
+                        <tr>
+                            <th>支払方法(PMH)</th>
+                            <th>引落日</th>
+                            <th>請求金額</th>
+                            <th>ｽﾃｰﾀｽ</th>
+                            <th>ｺﾒﾝﾄ</th>
+                            <th>RcID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dw_pmh">
+                        <tr>
+                            <td>PAYWAY1</td>
+                            <td>MM.DD</td>
+                            <td class="cell-y">00000</td>
+                            <td>OK</td>
+                            <td>CMNTTEXT</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="4">記録（支払方法別）過去3か月分</th>
+                        </tr>
+                        <tr>
+                            <th width="200px"></th>
+                            <th width="100px"></th>
+                            <th width="100px"></th>
+                            <th width="100px"></th>
+                        </tr>
+                        <tr>
+                            <th>支払方法(PMH)</th>
+                            <th>XX年A月</th>
+                            <th>XX年B月</th>
+                            <th>XX年C月</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dw_pmh">
+                        <tr>
+                            <td>PAYWAY1</td>
+                            <td class="cell-y">00000</td>
+                            <td class="cell-y">00000</td>
+                            <td class="cell-y">00000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="8">記録（一覧）過去5か月分</th>
+                        </tr>
+                        <tr>
+                            <th width="30px"></th>
+                            <th width="50px"></th>
+                            <th width="30px"></th>
+                            <th width="30px"></th>
+                            <th width="100px"></th>
+                            <th width="40px"></th>
+                            <th width="148px"></th>
+                            <th width="40px"></th>
+                        </tr>
+                        <tr>
+                            <th data-id="sn" sortable>SN</th>
+                            <th data-id="yy" sortable>年</th>
+                            <th data-id="mm" sortable>月</th>
+                            <th data-id="dd" sortable>日</th>
+                            <th data-id="value" sortable>請求金額</th>
+                            <th data-id="pmh" sortable>ｽﾃｰﾀｽ</th>
+                            <th data-id="cmnt" sortable>ｺﾒﾝﾄ</th>
+                            <th data-id="ccid" sortable>RcID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dwrite">
+                    </tbody>
+                </table>
+            </main>
+        </section>
+    </main>
+    <script>
+    </script>
+</body>
+
+</html>
